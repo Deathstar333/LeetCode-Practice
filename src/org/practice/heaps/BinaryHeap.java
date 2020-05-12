@@ -1,4 +1,4 @@
-package org.practice;
+package org.practice.heaps;
 
 import java.util.ArrayList;
 
