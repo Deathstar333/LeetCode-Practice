@@ -3,54 +3,32 @@ package org.practice.graphs;
 public class q947 {
 
     /*
-    Time Complexity: O(N^2)
-    Space Complexity: O(N^2)
+    Time Complexity: O(NlogN)
+    Space Complexity: O(N)
      */
     class Solution {
-        int[][] stones;
-        int len;
-        Map<Integer, List<Integer>> map;
         int[] parent;
         public int removeStones(int[][] stones) {
-            this.stones = stones;
-            this.len = stones.length;
-            this.map = new HashMap<>();
-            this.parent = new int[len];
+            this.parent = new int[20000];
             Arrays.fill(parent, -1);
-
-            HashSet<Integer> set = new HashSet<>();
-
+            Set<Integer> set = new HashSet<>();
+            int len = stones.length;
             for(int i=0; i<len; i++) {
-                for(int j=i+1; j<len; j++) {
-                    if(stones[i][0] == stones[j][0] || stones[i][1] == stones[j][1]) {
-                        List<Integer> list = map.getOrDefault(i, new ArrayList<Integer>());
-                        list.add(j);
-                        map.put(i, list);
-                    }
-                }
+                union(stones[i][0], stones[i][1] + 10000);
             }
-            // System.out.println(map.toString());
-
-            for(int i=0; i<len-1; i++) {
-                if(map.get(i) == null) continue;
-                for(int x: map.get(i)) {
-                    // System.out.println("start: " + Arrays.toString(parent));
-                    union(i, x);
-                    // System.out.println("end: " + Arrays.toString(parent));
-                }
-            }
-
             for(int i=0; i<len; i++) {
-                set.add(find(i));
+                set.add(find(stones[i][0]));
+                set.add(find(stones[i][1]+10000));
             }
-
             return len - set.size();
         }
 
         public int find(int i) {
             if(parent[i] == -1)
                 return i;
-            return find(parent[i]);
+            int result = find(parent[i]);
+            parent[i] = result;
+            return result;
         }
 
         public void union(int x, int y) {
@@ -60,7 +38,4 @@ public class q947 {
             parent[xset] = yset;
         }
     }
-
-    // 0  1  2  3  4  5
-    // 1  2  4  5  3 -1
 }
